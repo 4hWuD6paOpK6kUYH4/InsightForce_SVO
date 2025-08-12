@@ -1,7 +1,3 @@
-Of course. Here is the complete documentation for the application we've built, following the structure and style of the "InsightForge" example you provided.
-
-***
-
 # Insight Forge SVO - Slide Deck Audio Generation
 ## Executive Summary
 
