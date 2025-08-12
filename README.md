@@ -82,6 +82,33 @@ The tool processes tasks defined in the Google Sheet. When initiated, it enters 
 * Click **Audio Processor > 🔑 Set Gemini API Key**.
 * Enter your valid GCP API key when prompted.
 
+## Appendix: PowerPoint Audio Integration (VBA)
+
+### Overview
+A companion VBA (Visual Basic for Applications) macro is designed for Microsoft PowerPoint to complete the final step of the workflow. It takes the folder of audio files generated and automatically inserts each one into the corresponding slide of a presentation, creating a perfectly timed, self-running, narrated slideshow. This script is written in pure, native VBA to ensure maximum compatibility across different Windows and Office versions.
+
+### Key Features
+* **Folder-Based Batch Processing:** Prompts the user to select a single folder containing all the audio files for the presentation.
+* **Automatic Sorting:** Intelligently sorts the audio files alphabetically, ensuring that files named with leading numbers (e.g., `..._001_...`, `..._002_...`) are inserted in the correct sequence.
+* **One-to-One Slide Mapping:** Inserts the first sorted audio file into slide 1, the second into slide 2, and so on, until all files are placed or it runs out of slides.
+* **Automated Audio Configuration:** For each audio clip, it sets the playback options to:
+    * Play automatically when the slide appears.
+    * Hide the audio icon during the slideshow.
+* **Automated Slide Transitions:** The script precisely measures the duration of each inserted audio clip and sets the slide's transition to "Advance automatically after" that exact time, creating a seamless, hands-free presentation.
+* **Multi-Format Support:** Accepts the most common audio formats, including `.wav`, `.mp3`, and `.m4a`.
+
+### How to Set Up and Use the VBA Macro
+1.  **Prepare Your Files:** Make sure you have downloaded the folder containing all the generated `.wav` files from Google Drive to your local computer.
+2.  **Open PowerPoint:** Open the presentation you want to add the audio to.
+3.  **Open the VBA Editor:** Press **`Alt + F11`** on your keyboard.
+4.  **Insert a New Module:** In the new editor window, go to the menu and click **Insert > Module**. A blank code window will appear.
+5.  **Paste the Code:** Copy the `BatchInsertAndConfigureAudio_Native` VBA code and paste it into this new module.
+6.  **Run the Macro:**
+    * Press **`F5`** to run the code.
+    * Alternatively, go to the **Developer** tab in PowerPoint, click **Macros**, select `BatchInsertAndConfigureAudio_Native`, and click **Run**.
+7.  **Select the Folder:** A dialog box will appear. Navigate to and select the folder containing your downloaded audio files.
+8.  **Done:** The script will run through your slides, inserting and configuring the audio. A message box will appear when the process is complete. Your presentation is now ready to be played as a self-narrated slideshow.
+
 ---
 ### How to Use
 1.  **Add a New Task:** Add a new row to your sheet and fill in the input columns (A-F):
