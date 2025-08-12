@@ -1,0 +1,99 @@
+Sub BatchInsertAndConfigureAudio_Native()
+
+    ' --- SETTINGS ---
+    Dim audioLeft As Single: audioLeft = 10 ' Distance from the left edge
+    Dim audioTop As Single: audioTop = 10  ' Distance from the top edge
+
+    ' --- SCRIPT START ---
+    Dim fso As Object
+    Dim fld As Object
+    Dim fil As Object
+    Dim audioPath As String
+    Dim sld As Slide
+    Dim audioShape As Shape
+    Dim i As Long
+    Dim fileCount As Long
+    
+    ' Use a dynamic VBA array instead of ArrayList
+    Dim audioFiles() As String
+    
+    ' Ask user to select the folder with audio files
+    With Application.FileDialog(4) ' msoFileDialogFolderPicker
+        .Title = "Select the folder containing your ordered audio files"
+        .AllowMultiSelect = False
+        If .Show <> -1 Then Exit Sub ' User cancelled
+        audioPath = .SelectedItems(1)
+    End With
+
+    ' Count and load audio files into the array
+    Set fso = CreateObject("Scripting.FileSystemObject")
+    Set fld = fso.GetFolder(audioPath)
+    
+    ' First, count the files to size the array
+    fileCount = 0
+    For Each fil In fld.Files
+        If LCase(fso.GetExtensionName(fil.Name)) = "mp3" Or _
+           LCase(fso.GetExtensionName(fil.Name)) = "wav" Or _
+           LCase(fso.GetExtensionName(fil.Name)) = "m4a" Then
+            fileCount = fileCount + 1
+        End If
+    Next fil
+    
+    If fileCount = 0 Then
+        MsgBox "No audio files (.mp3, .wav, .m4a) were found in the selected folder.", vbExclamation, "No Files Found"
+        Exit Sub
+    End If
+    
+    ' Size the array and fill it
+    ReDim audioFiles(1 To fileCount)
+    i = 1
+    For Each fil In fld.Files
+        If LCase(fso.GetExtensionName(fil.Name)) = "mp3" Or _
+           LCase(fso.GetExtensionName(fil.Name)) = "wav" Or _
+           LCase(fso.GetExtensionName(fil.Name)) = "m4a" Then
+            audioFiles(i) = fil.Path
+            i = i + 1
+        End If
+    Next fil
+
+    ' Sort the array using our own function
+    BubbleSort audioFiles
+
+    ' Loop through the slides and insert audio
+    For i = 1 To UBound(audioFiles)
+        ' Stop if we run out of slides
+        If i > ActivePresentation.Slides.Count Then Exit For
+        
+        Set sld = ActivePresentation.Slides(i)
+        
+        ' Insert the audio file
+        Set audioShape = sld.Shapes.AddMediaObject2(FileName:=audioFiles(i), LinkToFile:=msoFalse, SaveWithDocument:=msoTrue, Left:=audioLeft, Top:=audioTop)
+        
+        ' --- Configure Audio and Slide Transition ---
+        audioShape.AnimationSettings.PlaySettings.PlayOnEntry = msoTrue
+        audioShape.AnimationSettings.PlaySettings.HideWhileNotPlaying = msoTrue
+        
+        sld.SlideShowTransition.AdvanceOnClick = msoFalse
+        sld.SlideShowTransition.AdvanceOnTime = msoTrue
+        sld.SlideShowTransition.AdvanceTime = (audioShape.MediaFormat.Length / 1000) + 0.5
+    Next i
+
+    MsgBox "Process complete!" & vbNewLine & UBound(audioFiles) & " audio files were inserted and configured.", vbInformation, "Done!"
+
+End Sub
+
+' A simple sorting function for our array
+Private Sub BubbleSort(arr() As String)
+    Dim i As Long, j As Long
+    Dim temp As String
+    If (Not arr) = -1 Then Exit Sub ' Exit if array is not initialized
+    For i = LBound(arr) To UBound(arr) - 1
+        For j = i + 1 To UBound(arr)
+            If arr(i) > arr(j) Then
+                temp = arr(i)
+                arr(i) = arr(j)
+                arr(j) = temp
+            End If
+        Next j
+    Next i
+End Sub
