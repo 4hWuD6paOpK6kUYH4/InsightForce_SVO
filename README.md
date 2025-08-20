@@ -6,6 +6,9 @@
 
 The application processes tasks on a row-by-row basis from the control sheet. Its core architectural feature is a fully automated, stateful, self-restarting workflow managed by time-driven triggers. This design intelligently handles large batch jobs by processing one row per execution, effectively bypassing Google Apps Script's 6-minute execution time limit and allowing for scalable, unattended operation. The architecture separates orchestration (`Triggers.gs`), core logic (`Code.gs`), and configurations (`Prompts.gs`, `Configuration.gs`) into distinct, maintainable script files.
 
+### Development Team
+Designed and developed by Simon
+
 ---
 ## Key Features
 * **Automated Trigger Loop:** A stateful, self-restarting workflow processes an entire queue of tasks by handling one row at a time and programmatically setting a trigger to continue. This architecture makes the system resilient to execution timeouts.
